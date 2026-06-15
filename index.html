@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to LearnHub</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ===== Hero ===== */
+  .welcome-wrap{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:3rem 2rem;
+    background:linear-gradient(135deg,var(--secondary),var(--primary-dark));
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .hero-slideshow{
+    position:absolute;
+    inset:0;
+    z-index:-2;
+  }
+  .hero-slideshow svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
+    transition:opacity 1.5s ease-in-out;
+  }
+  .hero-slideshow svg.active{
+    opacity:1;
+  }
+  .hero-overlay{
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    background:linear-gradient(135deg, rgba(8, 70, 193, 0.60), rgba(240, 240, 243, 0.60));
+  }
+  .welcome-wrap > img,
+  .welcome-wrap > h1,
+  .welcome-wrap > p,
+  .welcome-wrap > .welcome-tagline,
+  .welcome-wrap > .welcome-features,
+  .welcome-wrap > .welcome-cta,
+  .welcome-wrap > .scroll-hint{
+    position:relative;
+    z-index:1;
+  }
+  .welcome-logo{ width:140px; height:140px; border-radius:24px; box-shadow:0 10px 35px rgba(0,0,0,0.25); margin-bottom:1.5rem; }
+  .welcome-wrap h1{ font-size:2.75rem; margin-bottom:0.75rem; }
+  .welcome-tagline{ font-size:1.2rem; font-weight:600; opacity:0.95; margin-bottom:0.75rem; }
+  .welcome-wrap > p{ max-width:650px; color:rgba(255,255,255,0.9); margin-bottom:2rem; font-size:1.1rem; }
+  .welcome-features{ display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-bottom:2.5rem; }
+  .welcome-features div{ background:rgba(255,255,255,0.15); padding:0.75rem 1.25rem; border-radius:12px; font-weight:600; }
+  .welcome-cta{ background:#fff; color:var(--primary-dark); padding:0.9rem 2.2rem; border-radius:12px; font-size:1.1rem; font-weight:700; text-decoration:none; transition:all 0.2s; display:inline-block; }
+  .welcome-cta:hover{ transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.2); }
+  .scroll-hint{ margin-top:3rem; opacity:0.8; font-size:0.9rem; }
+
+  /* ===== Shared section styling ===== */
+  .section{
+    max-width:1100px;
+    margin:0 auto;
+    padding:4rem 2rem;
+  }
+  .section-title{
+    text-align:center;
+    font-size:2.2rem;
+    font-weight:700;
+    margin-bottom:0.5rem;
+  }
+  .section-subtitle{
+    text-align:center;
+    color:var(--text-light);
+    max-width:600px;
+    margin:0 auto 2.5rem;
+    font-size:1.05rem;
+  }
+
+  /* ===== About ===== */
+  .about-section{ background:var(--card); }
+  .about-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2rem;
+    align-items:center;
+  }
+  .about-grid .stats-grid{ margin-bottom:0; }
+  .about-grid p{ color:var(--text-light); line-height:1.7; margin-bottom:1rem; }
+
+  /* ===== Feature cards ===== */
+  .feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:1.5rem;
+  }
+  .feature-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:1.75rem;
+    transition:transform 0.3s, box-shadow 0.3s;
+  }
+  .feature-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+  }
+  .feature-icon{ font-size:2.5rem; margin-bottom:0.75rem; }
+  .feature-card h3{ margin-bottom:0.5rem; }
+  .feature-card p{ color:var(--text-light); font-size:0.95rem; line-height:1.6; }
+
+  /* ===== How it works ===== */
+  .steps-section{ background:var(--card); }
+  .steps-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:1.5rem;
+    text-align:center;
+  }
+  .step-number{
+    width:48px; height:48px;
+    border-radius:50%;
+    background:var(--primary);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:1.2rem;
+    margin:0 auto 1rem;
+  }
+  .step h3{ margin-bottom:0.5rem; }
+  .step p{ color:var(--text-light); font-size:0.95rem; }
+
+  /* ===== Testimonials ===== */
+  .testimonial-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:1.5rem;
+  }
+  .testimonial-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:1.75rem;
+  }
+  .testimonial-card p{ color:var(--text-light); font-style:italic; margin-bottom:1rem; line-height:1.6; }
+  .testimonial-author{ display:flex; align-items:center; gap:0.75rem; font-weight:600; }
+  .testimonial-avatar{
+    width:42px; height:42px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem;
+    background:var(--bg);
+  }
+
+  /* ===== Final CTA ===== */
+  .final-cta{
+    text-align:center;
+    background:linear-gradient(135deg,var(--primary), var(--secondary));
+    color:#fff;
+    border-radius:24px;
+    padding:3rem 2rem;
+    margin:0 2rem 3rem;
+  }
+  .final-cta h2{ font-size:2rem; margin-bottom:0.75rem; }
+  .final-cta p{ max-width:500px; margin:0 auto 1.5rem; opacity:0.95; }
+
+  @media (max-width:768px){
+    .about-grid{ grid-template-columns:1fr; }
+    .welcome-wrap h1{ font-size:2rem; }
+    .section{ padding:3rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="welcome-wrap">
+  <div class="hero-slideshow" id="heroSlideshow">
+    <svg class="active" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <rect width="1600" height="900" fill="#3730a3"/>
+      <circle cx="300" cy="200" r="180" fill="var(--secondary)" opacity="0.5"/>
+      <circle cx="1300" cy="700" r="260" fill="#06b6d4" opacity="0.4"/>
+      <rect x="500" y="300" width="600" height="400" rx="30" fill="#ffffff" opacity="0.08"/>
+      <text x="800" y="470" font-size="160" text-anchor="middle" fill="#ffffff" opacity="0.85">📖</text>
+    </svg>
+  </div>
+  <div class="hero-overlay"></div>
+  <img src="logo.png" alt="LearnHub logo" class="welcome-logo">
+  <h1>Welcome to LearnHub</h1>
+  <p class="welcome-tagline">Learn Smarter. Grow Faster.</p>
+  <p>Your all-in-one learning workspace — notes, quizzes, flashcards, practice sessions, brain games and progress tracking, all in one place. Built for students, self-learners, and lifelong curious minds.</p>
+  <div class="welcome-features">
+    <div>📝 Notes</div>
+    <div>📋 Quizzes</div>
+    <div>🃏 Flashcards</div>
+    <div>⏱️ Pomodoro Practice</div>
+    <div>🎮 Brain Games</div>
+    <div>📊 Progress Tracking</div>
+  </div>
+  <a href="login.html" class="welcome-cta" id="getStartedTop">Get Started →</a>
+  <div class="scroll-hint">↓ Scroll to learn more</div>
+</div>
+
+<!-- ABOUT -->
+<section class="section about-section">
+  <h2 class="section-title">What is LearnHub?</h2>
+  <p class="section-subtitle">A single workspace that brings everything you need to study, practice and improve — without juggling ten different apps.</p>
+  <div class="about-grid">
+    <div>
+      <p>LearnHub combines structured courses, a personal notebook, quizzes, flashcards and focus tools into one clean dashboard. Whether you're preparing for an exam, picking up a new skill, or just trying to build a daily learning habit, LearnHub gives you the tools to stay organized and motivated.</p>
+      <p>Track your streaks, earn points, climb the leaderboard, and watch your progress grow lesson by lesson — all stored right in your browser, ready whenever you are.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">100+</div>
+        <div class="stat-label">📖 Lessons</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">6</div>
+        <div class="stat-label">📚 Course Tracks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">⏱️ Always Open</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">∞</div>
+        <div class="stat-label">📈 Growth</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <h2 class="section-title">Everything you need to learn well</h2>
+  <p class="section-subtitle">Each tool is designed to fit into your routine, not the other way around.</p>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📖</div>
+      <h3>Structured Courses</h3>
+      <p>Enroll in courses across Web Development, Python, Mathematics, Science, English and History — each broken into bite-sized lessons you can check off as you go.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📝</div>
+      <h3>Smart Notes</h3>
+      <p>Capture ideas, summaries and study notes, organize them by category, and search through them instantly when exam time comes around.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Topic Quizzes</h3>
+      <p>Test your knowledge with quizzes across every subject, get instant feedback, and watch your average score climb on your dashboard.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🃏</div>
+      <h3>Flashcards</h3>
+      <p>Create flip-style flashcards for quick review sessions — perfect for memorizing vocabulary, formulas, and key facts.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⏱️</div>
+      <h3>Pomodoro Practice</h3>
+      <p>Stay focused with a built-in study timer. Run 25-minute focus sessions and short breaks to keep your energy up all day.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎮</div>
+      <h3>Brain Games</h3>
+      <p>Sharpen memory and reflexes with Memory Match, Number Guess, a Quick Math Challenge, and a Typing Speed Test.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏆</div>
+      <h3>Leaderboard & Points</h3>
+      <p>Earn points for quizzes, sessions, flashcards and games. Compare your progress on the leaderboard and stay motivated.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Progress Tracking</h3>
+      <p>See your quiz history, study sessions, flashcards reviewed and games played — all in one progress overview.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📚</div>
+      <h3>Study Library</h3>
+      <p>Browse a searchable library of quick-reference topics covering web dev, programming, math, science, language and more.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section steps-section">
+  <h2 class="section-title">How it works</h2>
+  <p class="section-subtitle">Get started in just a few minutes — no sign-up required.</p>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-number">1</div>
+      <h3>Open the Dashboard</h3>
+      <p>Jump straight in and see your stats, daily goals and quick tips at a glance.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <h3>Pick a Course or Tool</h3>
+      <p>Enroll in a course, write a note, start a quiz, or fire up a brain game — whatever fits your mood.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <h3>Track Your Streak</h3>
+      <p>Come back daily to build your streak, earn points and watch your progress chart grow.</p>
+    </div>
+    <div class="step">
+      <div class="step-number">4</div>
+      <h3>Climb the Leaderboard</h3>
+      <p>Compare your points with others and stay motivated to keep learning.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+  <h2 class="section-title">Loved by learners</h2>
+  <p class="section-subtitle">Here's what people are saying about their LearnHub experience.</p>
+  <div class="testimonial-grid">
+    <div class="testimonial-card">
+      <p>"The Pomodoro timer combined with quizzes keeps me focused for hours. My quiz scores have actually improved since I started using LearnHub."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🦊</div>
+        <span>Rahul, Computer Science Student</span>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <p>"I love the flashcards and the Study Library. It's the first app where I actually keep coming back every day to keep my streak alive."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🐰</div>
+        <span>Maya, High School Student</span>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <p>"The brain games are a fun way to take a break without feeling like I'm wasting time. Everything I need is in one dashboard now."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🐼</div>
+        <span>Sameeer, Lifelong Learner</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+  <h2>Ready to start learning smarter?</h2>
+  <p>Jump into your dashboard and explore courses, notes, quizzes, flashcards, games and more — all for free.</p>
+  <a href="login.html" class="welcome-cta" id="getStartedBottom">Get Started →</a>
+</div>
+
+<footer class="footer">© <span id="footerYear"></span> LearnHub • Empowering Lifelong Learning</footer>
+
+<script>
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>document.body.dataset.page = 'auth';</script>
+<script src="firebase-config.js"></script>
+<script>
+  // If the user is already signed in, send "Get Started" straight to the app
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById('getStartedTop').href = 'main.html';
+      document.getElementById('getStartedBottom').href = 'main.html';
+    }
+  });
+</script>
+
+</body>
+</html>
