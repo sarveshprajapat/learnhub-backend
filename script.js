@@ -87,17 +87,17 @@ async function sendMessage() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/chat",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message
-                })
-            }
-        );
+    "https://learnhub-backend-66pw.onrender.com/chat",
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message
+        })
+    }
+);
 
         const data = await response.json();
 
